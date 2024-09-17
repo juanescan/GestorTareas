@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestor de tareas</title>
+    <title>Crear Cuenta</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -29,7 +29,7 @@
             margin-bottom: 20px;
         }
 
-        input[type="text"], input[type="password"] {
+        input[type="text"], input[type="email"], input[type="password"] {
             width: 80%;
             padding: 10px;
             margin: 10px 0;
@@ -38,7 +38,7 @@
         }
 
         button {
-            background-color: #5087b8;
+            background-color: #4CAF50;
             color: white;
             padding: 10px;
             border: none;
@@ -49,10 +49,10 @@
         }
 
         button:hover {
-            background-color: #060606;
+            background-color: #45a049;
         }
 
-        .create-account {
+        .login-link {
             margin-top: 20px;
         }
 
@@ -64,38 +64,22 @@
         a:hover {
             text-decoration: underline;
         }
-
-        .forget-password {
-            margin-top: 20px;
-        }
-
-        b {
-            text-decoration: none;
-            color: #007BFF;
-        }
-
-        b:hover {
-            text-decoration: underline;
-        }
-
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>Gestor de tareas</h1>
+        <h1>Crear Cuenta</h1>
         <form>
-            <input type="text" placeholder="Nombre de usuario" required>
+            <input type="text" placeholder="Nombre de Usuario" required>
             <input type="password" placeholder="Contraseña" required>
-            <button type="submit">Entrar</button>
+            <input type="password" placeholder="Confirmar Contraseña" required>
+            <button type="submit">Registrar</button>
         </form>
 
-        <div class="create-account">
-            <a href="crear_usuario.html">Crear usuario</a>
-        </div>
-
-        <div class="forget-password">
-            <a href="olvide_contrasena.html">olvide contraseña</a>
+        <!-- Enlace para volver al inicio de sesión -->
+        <div class="login-link">
+            <a href="index.html">Volver al Inicio de Sesión</a>
         </div>
     </div>
 
