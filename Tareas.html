@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Tareas</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            width: 400px;
+        }
+
+        h1 {
+            font-size: 24px;
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        #task-form {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        #task-input {
+            width: 75%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #task-list {
+            list-style: none;
+            padding: 0;
+            margin-top: 20px;
+        }
+
+        #task-list li {
+            padding: 12px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.3s ease;
+        }
+
+        #task-list li:hover {
+            background-color: #f1f1f1;
+        }
+
+        .remove-task {
+            cursor: pointer;
+            color: #ff4c4c;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        .remove-task:hover {
+            color: #ff1a1a;
+        }
+
+        .task-text {
+            cursor: pointer;
+            flex-grow: 1;
+            padding-right: 10px;
+        }
+
+        .completed {
+            text-decoration: line-through;
+            color: #aaa;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Lista de Tareas</h1>
+
+        <!-- Formulario para añadir tareas -->
+        <form id="task-form">
+            <input type="text" id="task-input" placeholder="Añadir nueva tarea" required>
+            <button type="submit">Añadir</button>
+        </form>
+
+        <!-- Lista de tareas -->
+        <ul id="task-list">
+            <!-- Las tareas aparecerán aquí -->
+        </ul>
+    </div>
+
+    <script>
+        // Obtener elementos del DOM
+        const taskForm = document.getElementById('task-form');
+        const taskInput = document.getElementById('task-input');
+        const taskList = document.getElementById('task-list');
+
+        // Añadir tarea
+        taskForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            // Obtener el valor de la nueva tarea
+            const newTask = taskInput.value.trim();
+
+            if (newTask !== '') {
+                // Crear un nuevo elemento de lista (li)
+                const li = document.createElement('li');
+
+                // Crear el span que contiene el texto de la tarea
+                const taskSpan = document.createElement('span');
+                taskSpan.classList.add('task-text');
+                taskSpan.textContent = newTask;
+
+                // Crear el botón de eliminar
+                const removeBtn = document.createElement('span');
+                removeBtn.classList.add('remove-task');
+                removeBtn.textContent = 'x';
+
+                // Añadir el span de texto y el botón de eliminar al li
+                li.appendChild(taskSpan);
+                li.appendChild(removeBtn);
+
+                // Añadir el nuevo elemento a la lista
+                taskList.appendChild(li);
+
+                // Limpiar el campo de entrada
+                taskInput.value = '';
+            }
+        });
+
+        // Eliminar o marcar tarea como completada
+        taskList.addEventListener('click', function (e) {
+            // Marcar como completada
+            if (e.target.classList.contains('task-text')) {
+                e.target.classList.toggle('completed');
+            }
+
+            // Eliminar tarea
+            if (e.target.classList.contains('remove-task')) {
+                const li = e.target.parentElement;
+                taskList.removeChild(li);
+            }
+        });
+    </script>
+</body>
+</html>
