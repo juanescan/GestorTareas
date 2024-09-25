@@ -17,7 +17,7 @@
         }
 
         .container {
-            background-color: #fff;
+            background-color: #fefefe;
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
@@ -33,19 +33,20 @@
 
         #task-form {
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
         }
 
-        #task-input {
-            width: 75%;
+        #task-input, #task-desc {
+            width: 100%;
             padding: 10px;
-            border: 1px solid #ddd;
+            border: 1px solid #000000;
             border-radius: 5px;
             font-size: 16px;
+            margin-bottom: 10px;
         }
 
         button {
-            background-color: #4CAF50;
+            background-color: #2ba8e2;
             color: white;
             padding: 10px 15px;
             border: none;
@@ -56,7 +57,7 @@
         }
 
         button:hover {
-            background-color: #45a049;
+            background-color: #000000;
         }
 
         #task-list {
@@ -72,8 +73,7 @@
             border-radius: 5px;
             margin-bottom: 10px;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-direction: column;
             transition: background-color 0.3s ease;
         }
 
@@ -83,19 +83,24 @@
 
         .remove-task {
             cursor: pointer;
-            color: #ff4c4c;
+            color: #d12626;
             font-weight: bold;
+            align-self: flex-end;
             transition: color 0.3s ease;
         }
 
         .remove-task:hover {
-            color: #ff1a1a;
+            color: #000000;
         }
 
         .task-text {
+            font-weight: bold;
             cursor: pointer;
-            flex-grow: 1;
-            padding-right: 10px;
+        }
+
+        .task-desc {
+            margin-top: 5px;
+            color: #555;
         }
 
         .completed {
@@ -110,7 +115,8 @@
 
         <!-- Formulario para añadir tareas -->
         <form id="task-form">
-            <input type="text" id="task-input" placeholder="Añadir nueva tarea" required>
+            <input type="text" id="task-input" placeholder="Nombre de la tarea" required>
+            <textarea id="task-desc" placeholder="Descripción de la tarea" required></textarea>
             <button type="submit">Añadir</button>
         </form>
 
@@ -124,16 +130,18 @@
         // Obtener elementos del DOM
         const taskForm = document.getElementById('task-form');
         const taskInput = document.getElementById('task-input');
+        const taskDesc = document.getElementById('task-desc');
         const taskList = document.getElementById('task-list');
 
         // Añadir tarea
         taskForm.addEventListener('submit', function (e) {
             e.preventDefault();
 
-            // Obtener el valor de la nueva tarea
+            // Obtener el valor de la nueva tarea y su descripción
             const newTask = taskInput.value.trim();
+            const newDesc = taskDesc.value.trim();
 
-            if (newTask !== '') {
+            if (newTask !== '' && newDesc !== '') {
                 // Crear un nuevo elemento de lista (li)
                 const li = document.createElement('li');
 
@@ -142,20 +150,27 @@
                 taskSpan.classList.add('task-text');
                 taskSpan.textContent = newTask;
 
+                // Crear el span que contiene la descripción de la tarea
+                const taskDescSpan = document.createElement('span');
+                taskDescSpan.classList.add('task-desc');
+                taskDescSpan.textContent = newDesc;
+
                 // Crear el botón de eliminar
                 const removeBtn = document.createElement('span');
                 removeBtn.classList.add('remove-task');
                 removeBtn.textContent = 'x';
 
-                // Añadir el span de texto y el botón de eliminar al li
+                // Añadir el span de texto, la descripción y el botón de eliminar al li
                 li.appendChild(taskSpan);
+                li.appendChild(taskDescSpan);
                 li.appendChild(removeBtn);
 
                 // Añadir el nuevo elemento a la lista
                 taskList.appendChild(li);
 
-                // Limpiar el campo de entrada
+                // Limpiar los campos de entrada
                 taskInput.value = '';
+                taskDesc.value = '';
             }
         });
 
@@ -175,3 +190,4 @@
     </script>
 </body>
 </html>
+
