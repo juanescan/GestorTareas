@@ -73,7 +73,8 @@
             border-radius: 5px;
             margin-bottom: 10px;
             display: flex;
-            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
             transition: background-color 0.3s ease;
         }
 
@@ -81,31 +82,46 @@
             background-color: #f1f1f1;
         }
 
-        .remove-task {
+        .remove-task, .edit-task {
             cursor: pointer;
-            color: #d12626;
             font-weight: bold;
-            align-self: flex-end;
+            margin-left: 10px;
             transition: color 0.3s ease;
         }
 
         .remove-task:hover {
-            color: #000000;
+            color: #d12626;
         }
 
-        .task-text {
+        .edit-task:hover {
+            color: #2ba8e2;
+        }
+
+        .task-text, .task-desc {
+            display: inline-block;
+            margin-left: 10px;
             font-weight: bold;
-            cursor: pointer;
         }
 
         .task-desc {
-            margin-top: 5px;
+            font-weight: normal;
             color: #555;
+            margin-left: 20px;
         }
 
         .completed {
             text-decoration: line-through;
             color: #aaa;
+        }
+
+        .checkbox {
+            cursor: pointer;
+        }
+
+        .task-info {
+            display: flex;
+            align-items: center;
+            flex-grow: 1;
         }
     </style>
 </head>
@@ -145,6 +161,15 @@
                 // Crear un nuevo elemento de lista (li)
                 const li = document.createElement('li');
 
+                // Crear el checkbox
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.classList.add('checkbox');
+
+                // Crear un contenedor para el texto de la tarea y la descripción
+                const taskInfo = document.createElement('div');
+                taskInfo.classList.add('task-info');
+
                 // Crear el span que contiene el texto de la tarea
                 const taskSpan = document.createElement('span');
                 taskSpan.classList.add('task-text');
@@ -155,14 +180,24 @@
                 taskDescSpan.classList.add('task-desc');
                 taskDescSpan.textContent = newDesc;
 
+                // Crear el botón de editar
+                const editBtn = document.createElement('span');
+                editBtn.classList.add('edit-task');
+                editBtn.textContent = 'Editar';
+
                 // Crear el botón de eliminar
                 const removeBtn = document.createElement('span');
                 removeBtn.classList.add('remove-task');
                 removeBtn.textContent = 'x';
 
-                // Añadir el span de texto, la descripción y el botón de eliminar al li
-                li.appendChild(taskSpan);
-                li.appendChild(taskDescSpan);
+                // Añadir el texto de la tarea y la descripción al contenedor taskInfo
+                taskInfo.appendChild(taskSpan);
+                taskInfo.appendChild(taskDescSpan);
+
+                // Añadir el checkbox, el contenedor taskInfo, el botón de editar y el de eliminar al li
+                li.appendChild(checkbox);
+                li.appendChild(taskInfo);
+                li.appendChild(editBtn);
                 li.appendChild(removeBtn);
 
                 // Añadir el nuevo elemento a la lista
@@ -174,11 +209,12 @@
             }
         });
 
-        // Eliminar o marcar tarea como completada
+        // Función para editar la tarea
         taskList.addEventListener('click', function (e) {
-            // Marcar como completada
-            if (e.target.classList.contains('task-text')) {
-                e.target.classList.toggle('completed');
+            // Marcar como completada al hacer clic en el checkbox
+            if (e.target.classList.contains('checkbox')) {
+                const taskText = e.target.nextElementSibling.querySelector('.task-text'); // El span de la tarea
+                taskText.classList.toggle('completed');
             }
 
             // Eliminar tarea
@@ -186,8 +222,23 @@
                 const li = e.target.parentElement;
                 taskList.removeChild(li);
             }
+
+            // Editar tarea
+            if (e.target.classList.contains('edit-task')) {
+                const li = e.target.parentElement;
+                const taskTextSpan = li.querySelector('.task-text');
+                const taskDescSpan = li.querySelector('.task-desc');
+
+                // Convertir el contenido de las tareas en campos editables
+                const taskText = prompt("Edita el nombre de la tarea:", taskTextSpan.textContent);
+                const taskDesc = prompt("Edita la descripción de la tarea:", taskDescSpan.textContent);
+
+                if (taskText !== null && taskDesc !== null) {
+                    taskTextSpan.textContent = taskText;
+                    taskDescSpan.textContent = taskDesc;
+                }
+            }
         });
     </script>
 </body>
 </html>
-
