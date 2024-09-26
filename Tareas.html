@@ -240,6 +240,36 @@
                 }
             }
         });
+        function getProjects(token, environment) {
+            const baseURL = "https://api.itmplatform.com/"
+            const myProjects = '?URL=UserPages/MyProjects.aspx' // this is used to get "My Projects" (.../projects/?UserPages/MyProjects.aspx)
+            var html; // this variable will hold the HTML with the project list
+            document.getElementById("results").innerHTML = "Retrieving your projects..."
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    var myProjects = JSON.parse(xhttp.responseText); // Converts the response in a JSON object
+                    if (myProjects.length == 0) { document.getElementById("results").innerHTML = "You have no porjects assigned" }
+                    else {
+                        html = "These are the projects you are assigned to: <br><ul>";
+                        for (p = 0; p < myProjects.length; p++) {
+                            html = html + "<li>" + myProjects[p].ProjectName + "</li>"                            
+                        }
+                        html = html + "</ul>"
+                        document.getElementById("results").innerHTML =html;
+                    }
+                }
+                else if (this.readyState == 4 && this.status != 200) {
+                    document.getElementById("results").innerHTML = "Sorry, couldn't get your projects :/ "
+                    console.log(xhttp);
+                }
+            };
+            xhttp.open("GET", baseURL + environment + encodeURI('/projects/' + myProjects), true);
+            console.log("Token: " + token);
+            xhttp.setRequestHeader("Token", token);
+            console.log(xhttp);
+            xhttp.send();
+        }
     </script>
 </body>
 </html>
