@@ -241,7 +241,7 @@
             }
         });
         function getProjects(token, environment) {
-            const baseURL = "https://api.itmplatform.com/"
+            const baseURL = "http://localhost:8081/api/tareas"
             const myProjects = '?URL=UserPages/MyProjects.aspx' // this is used to get "My Projects" (.../projects/?UserPages/MyProjects.aspx)
             var html; // this variable will hold the HTML with the project list
             document.getElementById("results").innerHTML = "Retrieving your projects..."
