@@ -207,23 +207,38 @@
                 // Limpiar los campos de entrada
                 taskInput.value = '';
                 taskDesc.value = '';
+
+                // Aquí hacemos el envío con fetch
+                const taskData = {
+                    nombre: newTask,
+                    descripcion: newDesc
+                };
+
+                fetch("http://localhost:8081/api/tareas", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(taskData),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Tarea añadida:", data);
+                    // Aquí puedes actualizar tu lista de tareas en el frontend si lo deseas
+                })
+                .catch(error => {
+                    console.error("Error al añadir tarea:", error);
+                });
             }
-            var xhttp = new XMLHttpRequest();
-            xhttp.open("POST","http://localhost:8081/api/tareas",true);
-            
-            const taskData = {
-            title: newTask,
-            description: newDesc
-        };
-            xhttp.send(JSON.stringify(taskData))
         });
 
         // Función para editar la tarea
         taskList.addEventListener('click', function (e) {
             // Marcar como completada al hacer clic en el checkbox
             if (e.target.classList.contains('checkbox')) {
-                const taskText = e.target.nextElementSibling.querySelector('.task-text'); // El span de la tarea
-                taskText.classList.toggle('completed');
+                const li = e.target.parentElement; // Obtener el elemento li que contiene la tarea
+                const taskText = li.querySelector('.task-text'); // El span de la tarea
+                taskText.classList.toggle('completed'); // Cambiar el estado de completado
             }
 
             // Eliminar tarea
