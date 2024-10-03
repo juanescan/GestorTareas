@@ -37,7 +37,7 @@
             align-items: center;
         }
 
-        #task-input, #task-desc {
+        #task-input, #task-desc, #task-priority, #task-difficulty {
             width: 80%;
             padding: 10px;
             border: 1px solid #000000;
@@ -134,6 +134,18 @@
         <form id="task-form">
             <input type="text" id="task-input" placeholder="Nombre de la tarea" required>
             <textarea id="task-desc" placeholder="Descripción de la tarea" required></textarea>
+            
+            <!-- Campo para nivel de dificultad -->
+            <select id="task-difficulty" required>
+                <option value="">Seleccione nivel de dificultad</option>
+                <option value="Baja">Baja</option>
+                <option value="Media">Media</option>
+                <option value="Alta">Alta</option>
+            </select>
+            
+            <!-- Campo para prioridad -->
+            <input type="number" id="task-priority" placeholder="Prioridad (1 a 5)" min="1" max="5" required>
+
             <button type="submit">Añadir</button>
         </form>
 
@@ -145,241 +157,156 @@
 
     <script>
         // Obtener elementos del DOM
-        const taskForm = document.getElementById('task-form'); // Formulario para agregar tareas
-        const taskInput = document.getElementById('task-input'); // Campo de entrada para el nombre de la tarea
-        const taskDesc = document.getElementById('task-desc'); // Campo de entrada para la descripción de la tarea
-        const taskList = document.getElementById('task-list'); // Lista donde se mostrarán las tareas
-    
+        const taskForm = document.getElementById('task-form'); 
+        const taskInput = document.getElementById('task-input');
+        const taskDesc = document.getElementById('task-desc');
+        const taskDifficulty = document.getElementById('task-difficulty'); // Nuevo campo para dificultad
+        const taskPriority = document.getElementById('task-priority'); // Nuevo campo para prioridad
+        const taskList = document.getElementById('task-list');
+
         // Función para cargar todas las tareas desde el backend al iniciar la página
         function cargarTareas() {
-            fetch("http://localhost:8081/api/tareas") // Realiza una solicitud GET al backend
-                .then(response => response.json()) // Convierte la respuesta en JSON
+            fetch("http://localhost:8081/api/tareas") 
+                .then(response => response.json()) 
                 .then(tareas => {
-                    tareas.forEach(tarea => { // Itera sobre cada tarea recibida
-                        const li = document.createElement('li'); // Crea un nuevo elemento de lista
-                        li.dataset.taskId = tarea.id; // Asigna el ID de la tarea
+                    tareas.forEach(tarea => { 
+                        const li = document.createElement('li'); 
+                        li.dataset.taskId = tarea.id; 
     
-                        // Crear el checkbox para marcar como completada
                         const checkbox = document.createElement('input');
                         checkbox.type = 'checkbox';
                         checkbox.classList.add('checkbox');
-                        checkbox.checked = tarea.completada; // Marca como completada si corresponde
+                        checkbox.checked = tarea.completada; 
     
-                        // Crear un contenedor para el texto de la tarea y la descripción
                         const taskInfo = document.createElement('div');
                         taskInfo.classList.add('task-info');
     
-                        // Crear el elemento para el nombre de la tarea
                         const taskSpan = document.createElement('span');
                         taskSpan.classList.add('task-text');
                         taskSpan.textContent = tarea.nombre;
     
                         if (tarea.completada) {
-                            taskSpan.classList.add('completed'); // Añadir clase completada si la tarea está completada
+                            taskSpan.classList.add('completed');
                         }
     
-                        // Crear el elemento para la descripción de la tarea
                         const taskDescSpan = document.createElement('span');
                         taskDescSpan.classList.add('task-desc');
                         taskDescSpan.textContent = tarea.descripcion;
+
+                        // Mostrar nivel de dificultad y prioridad
+                        const taskDifficultySpan = document.createElement('span');
+                        taskDifficultySpan.textContent = `Dificultad: ${tarea.nivelDificultad}`;
+
+                        const taskPrioritySpan = document.createElement('span');
+                        taskPrioritySpan.textContent = `Prioridad: ${tarea.prioridad}`;
     
-                        // Crear el botón de editar
                         const editBtn = document.createElement('span');
                         editBtn.classList.add('edit-task');
                         editBtn.textContent = 'Editar';
     
-                        // Crear el botón de eliminar
                         const removeBtn = document.createElement('span');
                         removeBtn.classList.add('remove-task');
                         removeBtn.textContent = 'x';
     
-                        // Añadir el texto de la tarea y la descripción al contenedor taskInfo
                         taskInfo.appendChild(taskSpan);
                         taskInfo.appendChild(taskDescSpan);
+                        taskInfo.appendChild(taskDifficultySpan);
+                        taskInfo.appendChild(taskPrioritySpan);
     
-                        // Añadir el checkbox, el contenedor taskInfo, el botón de editar y el de eliminar al li
                         li.appendChild(checkbox);
                         li.appendChild(taskInfo);
                         li.appendChild(editBtn);
                         li.appendChild(removeBtn);
     
-                        // Añadir el nuevo elemento a la lista
                         taskList.appendChild(li);
                     });
                 })
                 .catch(error => {
-                    console.error("Error al cargar tareas:", error); // Manejo de errores
+                    console.error("Error al cargar tareas:", error);
                 });
         }
     
-        // Llamar a cargarTareas al cargar la página
-        window.onload = cargarTareas; // Cuando la ventana se carga, se llaman las tareas
+        window.onload = cargarTareas;
     
-        // Añadir tarea
         taskForm.addEventListener('submit', function (e) {
-            e.preventDefault(); // Prevenir el comportamiento por defecto del formulario
+            e.preventDefault(); 
     
-            const newTask = taskInput.value.trim(); // Obtener el nombre de la nueva tarea
-            const newDesc = taskDesc.value.trim(); // Obtener la descripción de la nueva tarea
+            const newTask = taskInput.value.trim(); 
+            const newDesc = taskDesc.value.trim(); 
+            const newDifficulty = taskDifficulty.value; 
+            const newPriority = taskPriority.value;
     
-            // Comprobar que los campos no estén vacíos
-            if (newTask !== '' && newDesc !== '') {
+            if (newTask !== '' && newDesc !== '' && newDifficulty !== '' && newPriority !== '') {
                 const taskData = {
                     nombre: newTask,
-                    descripcion: newDesc
+                    descripcion: newDesc,
+                    nivelDificultad: newDifficulty,
+                    prioridad: newPriority
                 };
     
-                // Realizar una solicitud POST para agregar la tarea
                 fetch("http://localhost:8081/api/tareas", {
                     method: "POST",
                     headers: {
-                        "Content-Type": "application/json", // Indicar el tipo de contenido
+                        "Content-Type": "application/json", 
                     },
-                    body: JSON.stringify(taskData), // Convertir el objeto a JSON
+                    body: JSON.stringify(taskData), 
                 })
-                .then(response => response.json()) // Convierte la respuesta en JSON
+                .then(response => response.json())
                 .then(data => {
-                    console.log("Tarea añadida:", data); // Muestra en consola la tarea añadida
-                    const li = document.createElement('li'); // Crear un nuevo elemento de lista
-                    li.dataset.taskId = data.id; // Asignar el ID de la tarea
+                    const li = document.createElement('li'); 
+                    li.dataset.taskId = data.id;
     
-                    // Crear el checkbox para la nueva tarea
                     const checkbox = document.createElement('input');
                     checkbox.type = 'checkbox';
                     checkbox.classList.add('checkbox');
     
-                    // Crear un contenedor para el texto de la tarea y la descripción
                     const taskInfo = document.createElement('div');
                     taskInfo.classList.add('task-info');
     
-                    // Crear el elemento para el nombre de la tarea
                     const taskSpan = document.createElement('span');
                     taskSpan.classList.add('task-text');
                     taskSpan.textContent = newTask;
     
-                    // Crear el elemento para la descripción de la tarea
                     const taskDescSpan = document.createElement('span');
                     taskDescSpan.classList.add('task-desc');
                     taskDescSpan.textContent = newDesc;
+
+                    const taskDifficultySpan = document.createElement('span');
+                    taskDifficultySpan.textContent = `Dificultad: ${newDifficulty}`;
+
+                    const taskPrioritySpan = document.createElement('span');
+                    taskPrioritySpan.textContent = `Prioridad: ${newPriority}`;
     
-                    // Crear el botón de editar
                     const editBtn = document.createElement('span');
                     editBtn.classList.add('edit-task');
                     editBtn.textContent = 'Editar';
     
-                    // Crear el botón de eliminar
                     const removeBtn = document.createElement('span');
                     removeBtn.classList.add('remove-task');
                     removeBtn.textContent = 'x';
     
-                    // Añadir el texto de la tarea y la descripción al contenedor taskInfo
                     taskInfo.appendChild(taskSpan);
                     taskInfo.appendChild(taskDescSpan);
+                    taskInfo.appendChild(taskDifficultySpan);
+                    taskInfo.appendChild(taskPrioritySpan);
     
-                    // Añadir el checkbox, el contenedor taskInfo, el botón de editar y el de eliminar al li
                     li.appendChild(checkbox);
                     li.appendChild(taskInfo);
                     li.appendChild(editBtn);
                     li.appendChild(removeBtn);
     
-                    // Añadir el nuevo elemento a la lista
                     taskList.appendChild(li);
     
-                    // Limpiar los campos de entrada
-                    taskInput.value = ''; // Limpiar el campo de entrada de la tarea
-                    taskDesc.value = ''; // Limpiar el campo de entrada de la descripción
+                    taskInput.value = ''; 
+                    taskDesc.value = ''; 
+                    taskDifficulty.value = ''; 
+                    taskPriority.value = ''; 
                 })
                 .catch(error => {
-                    console.error("Error al añadir tarea:", error); // Manejo de errores
+                    console.error("Error al crear tarea:", error);
                 });
-            }
-        });
-    
-        // Interacciones en la lista de tareas (completar, editar, eliminar)
-        taskList.addEventListener('click', function (e) {
-            // Eliminar tarea
-            if (e.target.classList.contains('remove-task')) {
-                const li = e.target.parentElement; // Obtener el elemento li correspondiente
-                const taskId = li.dataset.taskId; // Obtener el ID de la tarea
-    
-                // Realizar una solicitud DELETE para eliminar la tarea
-                fetch(`http://localhost:8081/api/tareas/${taskId}`, {
-                    method: "DELETE",
-                })
-                .then(() => {
-                    console.log("Tarea eliminada"); // Mostrar en consola que la tarea fue eliminada
-                    li.remove(); // Eliminar el elemento de la lista
-                })
-                .catch(error => {
-                    console.error("Error al eliminar tarea:", error); // Manejo de errores
-                });
-            }
-    
-            // Completar tarea
-            if (e.target.classList.contains('checkbox')) {
-                const li = e.target.parentElement; // Obtener el elemento li correspondiente
-                const taskId = li.dataset.taskId; // Obtener el ID de la tarea
-                const isChecked = e.target.checked; // Obtener el estado del checkbox
-    
-                // Realizar una solicitud PUT para marcar la tarea como completada
-                fetch(`http://localhost:8081/api/tareas/${taskId}/completar`, {
-                    method: "PUT",
-                })
-                .then(response => response.json()) // Convierte la respuesta en JSON
-                .then(data => {
-                    const taskSpan = li.querySelector('.task-text'); // Obtener el elemento de texto de la tarea
-                    if (data.completada) {
-                        taskSpan.classList.add('completed'); // Añadir clase 'completed' si la tarea está completada
-                    } else {
-                        taskSpan.classList.remove('completed'); // Remover clase 'completed' si no está completada
-                    }
-                })
-                .catch(error => {
-                    console.error("Error al completar tarea:", error); // Manejo de errores
-                });
-            }
-    
-            // Editar tarea
-            if (e.target.classList.contains('edit-task')) {
-                const li = e.target.parentElement; // Obtener el elemento li correspondiente
-                const taskId = li.dataset.taskId; // Obtener el ID de la tarea
-    
-                const newTaskName = prompt('Edita el nombre de la tarea:'); // Pedir al usuario que edite el nombre
-                const newTaskDesc = prompt('Edita la descripción de la tarea:'); // Pedir al usuario que edite la descripción
-    
-                // Verificar que el usuario no haya cancelado el prompt
-                if (newTaskName !== null && newTaskDesc !== null) {
-                    const taskData = {
-                        nombre: newTaskName,
-                        descripcion: newTaskDesc
-                    };
-    
-                    // Realizar una solicitud PUT para actualizar la tarea
-                    fetch(`http://localhost:8081/api/tareas/${taskId}/actualizar`, {
-                        method: "PUT",
-                        headers: {
-                            "Content-Type": "application/json", // Indicar el tipo de contenido
-                        },
-                        body: JSON.stringify(taskData), // Convertir el objeto a JSON
-                    })
-                    .then(response => response.json()) // Convierte la respuesta en JSON
-                    .then(data => {
-                        console.log("Tarea actualizada:", data); // Mostrar en consola la tarea actualizada
-    
-                        const taskSpan = li.querySelector('.task-text'); // Obtener el elemento de texto de la tarea
-                        const taskDescSpan = li.querySelector('.task-desc'); // Obtener el elemento de descripción de la tarea
-    
-                        // Actualizar el contenido de los elementos
-                        taskSpan.textContent = newTaskName; 
-                        taskDescSpan.textContent = newTaskDesc;
-                    })
-                    .catch(error => {
-                        console.error("Error al actualizar tarea:", error); // Manejo de errores
-                    });
-                }
             }
         });
     </script>
-    
 </body>
 </html>
