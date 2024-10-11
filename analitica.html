@@ -6,20 +6,63 @@
     <title>Gráficos de Tareas</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7fa;
+            color: #333;
+            text-align: center;
+        }
+
+        h1 {
+            margin: 20px 0;
+            color: #4a90e2;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        button {
+            background-color: #4a90e2;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        button:hover {
+            background-color: #357abd;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
         .chart-container {
             display: none;
-            width: 80%;
+            width: 90%;
             max-width: 600px;
             margin: 20px auto;
-        }
-        button {
-            margin: 10px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
         }
     </style>
 </head>
 <body>
     <h1>Análisis de Tareas</h1>
-    <div>
+    <div class="button-container">
         <button onclick="showChart('dificultad')">Histograma de Dificultad</button>
         <button onclick="showChart('finalizadas')">Número de tareas finalizadas por tiempo</button>
         <button onclick="showChart('promedios')">Promedios de tareas por prioridad</button>
